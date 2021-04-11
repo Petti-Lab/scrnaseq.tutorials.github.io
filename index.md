@@ -1,8 +1,7 @@
 ---
 feature_text: |
-  ## RNA-seq Bioinformatics
-  Introduction to single-cell RNA-sequencing data analysis
-title: Simple Seurat V3 workflow for scRNA-seq data analysis
+  ## Introduction to single-cell RNA-sequencing data analysis
+title: A Simplified Seurat V3 workflow
 ---
 
 # Exercise: A Complete Seurat Workflow

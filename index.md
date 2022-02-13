@@ -8,7 +8,7 @@ In this exercise, we will analyze and interpret a small scRNA-seq data set consi
 
 ## Step 1: Preparation
 
-Working at the linux command line in your home directory, create a new directory for your output files called “scrna.” Change to that directory, and create a subdirectory called scRNA_data. Change directories to scRNA_data, then download the data and code. The commands are:
+If you are working on the RIS cluster, log in and change to your working directory of choice. Create a new directory for your output files called “scrna.” Change to that directory, and create a subdirectory called scRNA_data. Change directories to scRNA_data, then download the data and code, and return to the 'scrna' diretory. The commands are:
 
 ```bash
 mkdir scrna
@@ -183,7 +183,7 @@ This can be used to determine whether heterogeneity in cell cycle phase is drivi
 
 
 ```R
-cell.cycle.tirosh <- read.csv("http://genomedata.org/rnaseq-tutorial/scrna/CellCycleTiroshSymbol2ID.csv", header=TRUE); # read in the list of genes
+cell.cycle.tirosh <- read.csv("scRNA_data/CellCycleTiroshSymbol2ID.csv", header=TRUE); # read in the list of genes
 s.genes = cell.cycle.tirosh$Gene.Symbol[which(cell.cycle.tirosh$List == "G1/S")]; # create a vector of S-phase genes
 g2m.genes = cell.cycle.tirosh$Gene.Symbol[which(cell.cycle.tirosh$List == "G2/M")]; # create a vector of G2/M-phase genes
 scrna <- CellCycleScoring(object=scrna, s.features=s.genes, g2m.features=g2m.genes, set.ident=FALSE)
@@ -228,7 +228,7 @@ scrna <- subset(scrna, cells=subcells)
 
 ## Step 9. Normalize the data, detect variable genes, and scale the data.
 
-Normalize the data:
+Normalize the data. Note that the normalized data will be stored in the 'data' slot of the Seurat object.
 
 ```R
 scrna <- NormalizeData(object = scrna, normalization.method = "LogNormalize", scale.factor = 1e6);
@@ -248,7 +248,7 @@ print(vg);
 dev.off()
 ```
 
-Scale and center the data:
+Scale and center the data. Note that the scaled, centered data will be stored in the 'scale.data' slot of the Seurat object.
 
 ```R
 scrna <- ScaleData(object = scrna, features = rownames(x = scrna), display.progress=FALSE);
@@ -270,7 +270,7 @@ saveRDS(scrna, file = sprintf("%s/VST.rds", outdir));
 
 ```R
 scrna.cnv <- NormalizeData(object = scrna, normalization.method = "RC", scale.factor = 1e5);
-data.cnv <- GetAssayData(object=scrna.cnv, slot="data"); # get the normalized data
+data.cnv <- GetAssayData(object = scrna.cnv, slot="data"); # get the normalized data
 log2data = log2(data.cnv+1); # add 1 then take log2
 df <- as.data.frame(as.matrix(log2data)); # convert it to a data frame
 cells <- as.data.frame(colnames(df));
@@ -349,7 +349,7 @@ write.table(pc.pval, file=sprintf("%s/PCA.jackstraw.scores.xls", outdir, date), 
 
 ## Step 11. Generate 2-dimensional layouts of the data using two related algorithms, t-SNE and UMAP.
 
-Use the number of principal components (nPC) you selected above.
+Use the number of principal components (nPC) you selected above. For the sake of demonstration, we use 10 in this example:
 
 ```R
 nPC = 10;

@@ -19,7 +19,7 @@ wget -r -N --no-parent -nH --reject zip -R "index.html*" --cut-dirs=2 http://gen
 wget http://genomedata.org/rnaseq-tutorial/scrna/PlotMarkers.r
 cd ../ # go back to the scrna directory
 ```
-Submit an interactive job running a Docker container containing Seurat and associated packages. You must substitute your compute group for 'compute-group' (for example, this lab uses 'compute-allegra.petti') and you may need to change the queue from 'siteman-interactive' to one for which you have access.
+Submit an interactive job running a Docker container containing Seurat and associated packages. You must substitute your compute group for 'compute-group' (for example, this lab uses 'compute-allegra.petti') and you may need to change the queue from 'siteman-interactive' to one for which you have access. For larger analyses you may need to request more resources.
 
 ```
 LSF_DOCKER_PRESERVE_ENVIRONMENT=false bsub -Is -G compute-group -n 4 -q siteman-interactive -M 32000000 -R 'select[mem>32000] span[hosts=1] rusage[mem=32000]' -a 'docker(satijalab/seurat)' /bin/bash
@@ -344,7 +344,7 @@ js <- JackStrawPlot(object = scrna, dims = 1:30)
 print(js);
 dev.off();
 pc.pval <- scrna@reductions$pca@jackstraw@overall.p.values; # get p-value for each PC
-write.table(pc.pval, file=sprintf("%s/PCA.jackstraw.scores.xls", outdir, date), quote=FALSE, sep='\t', col.names=TRUE);
+write.table(pc.pval, file=sprintf("%s/PCA.jackstraw.scores.xls", outdir), quote=FALSE, sep='\t', col.names=TRUE);
 ```
 
 ## Step 11. Generate 2-dimensional layouts of the data using two related algorithms, t-SNE and UMAP.
@@ -407,7 +407,7 @@ dev.off();
 Now use the code that we downloaded from http://genomedata.org/rnaseq-tutorial/scrna/PlotMarkers.r to color the UMAP according to the expression of the markers in gene_lists_human_180502.csv:
 
 ```R
-source("~/workspace/scrna/PlotMarkers.r")
+source("scRNA_data/PlotMarkers.r")
 ```
 
 During the differential expression analysis in Step 14, which will take about 10 minutes to run, use these plots to make inferences about cell type.

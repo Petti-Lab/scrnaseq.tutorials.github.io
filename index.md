@@ -8,11 +8,12 @@ In this exercise, we will analyze and interpret a small scRNA-seq data set consi
 
 ## Step 1: Preparation
 
-If you are working on the RIS cluster, log in and change to your working directory of choice. Create a new directory for your output files called “scrna.” Change to that directory, and create a subdirectory called scRNA_data. Change directories to scRNA_data, then download the data and code, and return to the 'scrna' diretory. The commands are:
+If you are working on the RIS cluster, log in and change to your working directory of choice. Create a new directory for your output files called “scrna.” Change to that directory, and clone a small github repository that contains one helpful ancillary file. Then create a subdirectory called scRNA_data and change to that directory. Then download the data and code, and return to the 'scrna' diretory. The commands are:
 
 ```bash
 mkdir scrna
 cd scrna
+git clone https://github.com/Petti-Lab/Bfx_Workshop.git # puts the PlotMarkers.r script in the directory Bfx_Workshop
 mkdir scRNA_data
 cd scRNA_data
 wget -r -N --no-parent -nH --reject zip -R "index.html*" --cut-dirs=2 http://genomedata.org/rnaseq-tutorial/scrna/
@@ -395,7 +396,7 @@ dev.off();
 ```
 
 ## Step 12: Infer cell types.
-There are many sophisticated methods for doing this (e.g. SingleR). But the simplest and most common approach is to plot the expression levels of marker genes for known cell types. Markers for bone-marrow-relevant cell types are provided in the file ~/workspace/scRNA_data/gene_lists_human_180502.csv. To plot three genes of your choice, GENE1, GENE2, and GENE3:
+There are many sophisticated methods for doing this (e.g. SingleR). But the simplest and most common approach is to plot the expression levels of marker genes for known cell types. Markers for bone-marrow-relevant cell types are provided in the file scRNA_data/gene_lists_human_180502.csv. To plot three genes of your choice, for example GENE1, GENE2, and GENE3:
 
 ```R
 jpeg(sprintf("%s/geneplot.jpg", outdir), units="in", res=300, height=6, width=6);
@@ -404,10 +405,10 @@ print(fp);
 dev.off();
 ```
 
-Now use the code that we downloaded from http://genomedata.org/rnaseq-tutorial/scrna/PlotMarkers.r to color the UMAP according to the expression of the markers in gene_lists_human_180502.csv:
+Now use the code that we downloaded from GitHub to color the UMAP according to the expression of the markers in gene_lists_human_180502.csv:
 
 ```R
-source("scRNA_data/PlotMarkers.r")
+source("Bfx_Workshop/PlotMarkers.r")
 ```
 
 During the differential expression analysis in Step 14, which will take about 10 minutes to run, use these plots to make inferences about cell type.
@@ -473,7 +474,7 @@ write.table(DEGs, file=sprintf("%s/DEGs.Wilcox.xls", outdir), quote=FALSE, sep="
 Examine the contents and structure of DEGs. How many DEGs are there? What values are contained in this output? Now choose the top 10 DEGs in each cluster, and print them to a heatmap using DoHeatmap and a red/white/blue color scheme:
 
 ```R
-top10 <- DEGs %>% group_by(cluster) %>% top_n(n = 10, wt = avg_logFC);
+top10 <- DEGs %>% group_by(cluster) %>% top_n(n = 10, wt = avg_log2FC);
 jpeg(sprintf("%s/heatmap.jpg", outdir), units="in", res=300, height=20, width=15);
 DoHeatmap(scrna, features=top10$gene, slot="scale.data", disp.min=-2, disp.max=2, group.by="ident", group.bar=TRUE) + scale_fill_gradientn(colors = c("blue", "white", "red")) + theme(axis.text.y = element_text(size = 10));
 dev.off();
@@ -486,12 +487,23 @@ Do different clusters correspond to different cell types? (Should they?)
 Are the DEGs helpful for identifying cell types?
 Does cell type correlate with other parameters (e.g. UMI, number of genes, cell cycle phase, etc?)
 
-## INDEPENDENT EXERCISES, IF TIME PERMITS: ##
-
 ## Step 15: Perform a sample-wise differential expression analysis. Then make a heatmap and perform functional enrichment analysis of the differentially expressed genes. Overall, how do the samples differ from each other?
+
+```R
+Idents(scrna) <- "DataSet"; # change the default identity to the Data Set (ie Sample), named here "A", "B", and "C"
+unique(Idents(scrna)); # Confirm that the default identities are what you think they are
+sample_DEGs <- FindAllMarkers(object=scrna, logfc.threshold=1, min.diff.pct=.2);
+write.table(sample_DEGs, file=sprintf("%s/SampleDEGs.Wilcox.xls", outdir), quote=FALSE, sep="\t", row.names=FALSE);
+sample_top10 <- sample_DEGs %>% group_by(cluster) %>% top_n(n = 10, wt = avg_log2FC); # NB: here, "cluster" refers to the data set
+jpeg(sprintf("%s/sample_heatmap.jpg", outdir), units="in", res=300, height=20, width=15);
+DoHeatmap(scrna, features=sample_top10$gene, slot="scale.data", disp.min=-2, disp.max=2, group.by="ident", group.bar=TRUE) + scale_fill_gradientn(colors = c("blue", "white", "red")) + theme(axis.text.y = element_text(size = 10));
+dev.off();
+```
+
+## INDEPENDENT EXERCISES, IF TIME PERMITS: ##
 
 ## Step 16: Experiment with the number of components, the clustering resolution, and the DEG filtering thresholds to understand how these parameters affect the results. What set of parameters provides the closest correspondence between cell type and cluster?  
 
-## Step 17: Perform batch correction using the sample code provided during the lecture. Assign each sample to its own batch, and repeat the analysis. How does batch correction affect the result?
+## Step 17: Perform "data integration" (or "batch correction") using the sample code provided during the lecture. Assign each sample to its own batch, and repeat the analysis. How does batch correction affect the result?
 
 ## Step 18: Subset the T-cells, assign them to a new Seurat object, and re-analyze them in isolation. Does this improve your ability to resolve T-cell subsets?

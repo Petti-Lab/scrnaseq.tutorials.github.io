@@ -1,9 +1,2 @@
 theme: jekyll-theme-tactile
 title: single-cell RNA-sequencing data analysis
-colors:
-    gradient_left: "#b4b5b8"
-    gradient_right: "#638ec9"
-    header: "#2121ed"
-    android_theme: "#638ec9" # this default to gradient_color
-    link: "#638ec9" # this default to gradient_color
-    section_title: "#943253" # this default to gradient_color

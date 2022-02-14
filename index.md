@@ -84,7 +84,7 @@ Finally, remove the raw data to save space:
 
 ## Step 4. Merge the Seurat objects into a single object.
 
-We will call this object `scrna`. We also give it a project name (here, "CSHL"), and prepend the appropriate data set name to each cell barcode. For example, if a barcode from data set "B" is originally `AATCTATCTCTC`, it will now be `B_AATCTATCTCTC`. Then clean up some space by removing `scrna.list`. Finally, save the merged object as an RDS file. Should you need to load this file into R at any time, it can be done using the `readRDS` command.
+We will call this object `scrna`. We also give it a project name (here, "Workshop"), and prepend the appropriate data set name to each cell barcode. For example, if a barcode from data set "B" is originally `AATCTATCTCTC`, it will now be `B_AATCTATCTCTC`. Then clean up some space by removing `scrna.list`. Finally, save the merged object as an RDS file. Should you need to load this file into R at any time, it can be done using the `readRDS` command.
 
 ```R
 scrna <- merge(x=scrna.list[[1]], y=c(scrna.list[[2]],scrna.list[[3]]), add.cell.ids = c("A","B","C"), project="Workshop");
@@ -198,14 +198,14 @@ First calculate some basic statistics on the various QC parameters, which can be
 
 ```R
 min <- min(scrna@meta.data$nFeature_RNA);
-m <- median(scrna@meta.data$nFeature_RNA)
-max <- max(scrna@meta.data$nFeature_RNA)    
-s <- sd(scrna@meta.data$nFeature_RNA)
-min1 <- min(scrna@meta.data$nCount_RNA)
-max1 <- max(scrna@meta.data$nCount_RNA)
-m1 <- mean(scrna@meta.data$nCount_RNA)
-s1 <- sd(scrna@meta.data$nCount_RNA)
-Count93 <- quantile(scrna@meta.data$nCount_RNA, 0.93) # calculate value in the 93rd percentile
+m <- median(scrna@meta.data$nFeature_RNA);
+max <- max(scrna@meta.data$nFeature_RNA);    
+s <- sd(scrna@meta.data$nFeature_RNA);
+min1 <- min(scrna@meta.data$nCount_RNA);
+max1 <- max(scrna@meta.data$nCount_RNA);
+m1 <- mean(scrna@meta.data$nCount_RNA);
+s1 <- sd(scrna@meta.data$nCount_RNA);
+Count93 <- quantile(scrna@meta.data$nCount_RNA, 0.93) # calculate value in the 93rd percentile -- drawn from 10xGenomics doublet rate estimates
 print(paste("Feature stats:",min,m,max,s));
 print(paste("UMI stats:",min1,m1,max1,s1,Count93));
 ```
@@ -270,8 +270,8 @@ saveRDS(scrna, file = sprintf("%s/VST.rds", outdir));
 **DIGRESSION:** How can you use Seurat-processed data with packages that are not compatible with Seurat? Other packages may require the data to be normalized in a specific way, and often require an expression matrix (not a Seurat object) as input. As an example, here we prepare an expression data matrix for use with the popular CNV-detection package CONICSmat:
 
 ```R
-scrna.cnv <- NormalizeData(object = scrna, normalization.method = "RC", scale.factor = 1e5);
-data.cnv <- GetAssayData(object = scrna.cnv, slot="data"); # get the normalized data
+scrna.cnv <- NormalizeData(object = scrna, normalization.method = "RC", scale.factor = 1e5); # 'RC' = Relative Counts
+data.cnv <- GetAssayData(object = scrna.cnv, slot = "data"); # get the normalized data
 log2data = log2(data.cnv+1); # add 1 then take log2
 df <- as.data.frame(as.matrix(log2data)); # convert it to a data frame
 cells <- as.data.frame(colnames(df));

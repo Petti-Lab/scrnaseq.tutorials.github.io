@@ -3,6 +3,7 @@ feature_text: |
   ## Introduction to single-cell RNA-sequencing data analysis
 title: A Seurat workflow for scRNA-seq analysis
 ---
+Maintained by [https://sites.wustl.edu/pettilab/] (https://sites.wustl.edu/pettilab/)
 
 In this exercise, we will analyze and interpret a small scRNA-seq data set consisting of three bone marrow samples. Two of the samples are from the same patient, but differ in that one sample was enriched for progenitor (CD34+) cells. The goal of this analysis is to determine what cell types are present in the three samples, and how the samples and patients differ. This was drawn in part from the Seurat vignettes at [https://satijalab.org/seurat/vignettes.html](https://satijalab.org/seurat/vignettes.html).
 

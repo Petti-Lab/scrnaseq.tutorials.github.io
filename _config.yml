@@ -1,4 +1,4 @@
-theme: jekyll-theme-cayman
+theme: jekyll-theme-tactile
 title: single-cell RNA-sequencing data analysis
 colors:
     gradient_left: "#b4b5b8"

@@ -19,7 +19,7 @@ mkdir scRNA_data
 cd scRNA_data
 wget -r -N --no-parent -nH --reject zip -R "index.html*" --cut-dirs=2 http://genomedata.org/rnaseq-tutorial/scrna/
 wget http://genomedata.org/rnaseq-tutorial/scrna/PlotMarkers.r
-cd ../ # go back to the scrna directory
+cd ../../ # go back to the parent directory
 ```
 Submit an interactive job running a Docker container containing Seurat and associated packages. You must substitute your compute group for 'compute-group' (for example, this lab uses 'compute-allegra.petti') and you may need to change the queue from 'siteman-interactive' to one for which you have access. For larger analyses you may need to request more resources.
 

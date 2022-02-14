@@ -9,7 +9,7 @@ In this exercise, we will analyze and interpret a small scRNA-seq data set consi
 
 ## Step 1: Preparation
 
-If you are working on the RIS cluster, log in and change to your working directory of choice. Create a new directory for your output files called “scrna.” Change to that directory, and clone a small github repository that contains one helpful ancillary file. Then create a subdirectory called scRNA_data and change to that directory. Then download the data and code, and return to the 'scrna' diretory. The commands are:
+If you are working on the RIS cluster, log in and change to your working directory of choice. Create a new directory for your output files called “scrna.” Change to that directory, and clone a small github repository that contains one ancillary script. Then create a subdirectory called scRNA_data and change to that directory. Then download the data and code, and return to the 'scrna' directory. The commands are:
 
 ```bash
 mkdir scrna
@@ -27,7 +27,7 @@ Submit an interactive job running a Docker container containing Seurat and assoc
 LSF_DOCKER_PRESERVE_ENVIRONMENT=false bsub -Is -G compute-group -n 4 -q siteman-interactive -M 32000000 -R 'select[mem>32000] span[hosts=1] rusage[mem=32000]' -a 'docker(satijalab/seurat)' /bin/bash
 ```
 
-In the Start R (by typing ‘R’ at the command line) and load some R libraries as follows:
+In the interactive session, start R (by typing ‘R’ at the command line) and load some R libraries as follows:
 
 ```R
 library("Seurat");
